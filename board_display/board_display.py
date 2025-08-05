@@ -1,7 +1,6 @@
 import pygame
 import sys
 
-# === Cấu hình bàn cờ ===
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 880
 BOARD_ROWS = 10
@@ -9,13 +8,11 @@ BOARD_COLS = 9
 SQUARE_SIZE = 80
 MARGIN_TOP = 40
 
-# === Khởi tạo màu và hình quân cờ ===
 WHITE = (245, 245, 220)
 BLACK = (30, 30, 30)
 LINE_COLOR = (50, 50, 50)
 FONT_SIZE = 28
 
-# Map tên quân → unicode (hoặc ký hiệu ngắn)
 PIECE_SYMBOLS = {
     "red-general": "帥", "red-advisor": "仕", "red-elephant": "相", "red-horse": "傌",
     "red-chariot": "俥", "red-cannon": "炮", "red-soldier": "兵",
@@ -23,41 +20,15 @@ PIECE_SYMBOLS = {
     "black-chariot": "車", "black-cannon": "砲", "black-soldier": "卒",
 }
 
-# === Nhận input danh sách quân cờ ===
-# Vị trí: (cột, hàng) từ (0,0) góc trái trên
-pieces = [
-    ("red-general", (4, 9)),
-    ("black-general", (4, 0)),
-    ("red-cannon", (1, 7)),
-    ("red-soldier", (0, 6)),
-    ("black-soldier", (0, 3)),
-    ("black-chariot", (0, 0)),
-    ("red-chariot", (8, 9)),
-    # Add more as needed
-]
-
-# === Khởi tạo Pygame ===
-pygame.init()
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Bàn cờ Tướng")
-font = pygame.font.SysFont("simsun", FONT_SIZE)
-
-def draw_board():
+def draw_board(screen):
     screen.fill(WHITE)
-
-    # Vẽ hàng ngang
     for row in range(BOARD_ROWS):
         y = MARGIN_TOP + row * SQUARE_SIZE
         pygame.draw.line(screen, LINE_COLOR, (SQUARE_SIZE, y), (SQUARE_SIZE * BOARD_COLS, y), 2)
-
-    # Vẽ cột dọc
     for col in range(BOARD_COLS):
         x = SQUARE_SIZE + col * SQUARE_SIZE
-        # 2 đoạn tách đôi sông
         pygame.draw.line(screen, LINE_COLOR, (x, MARGIN_TOP), (x, MARGIN_TOP + 4 * SQUARE_SIZE), 2)
         pygame.draw.line(screen, LINE_COLOR, (x, MARGIN_TOP + 5 * SQUARE_SIZE), (x, MARGIN_TOP + 9 * SQUARE_SIZE), 2)
-
-    # Vẽ 2 đường chéo khu tướng
     for (start, end) in [((3, 0), (5, 2)), ((5, 0), (3, 2)), ((3, 7), (5, 9)), ((5, 7), (3, 9))]:
         x1 = SQUARE_SIZE + start[0] * SQUARE_SIZE
         y1 = MARGIN_TOP + start[1] * SQUARE_SIZE
@@ -65,29 +36,13 @@ def draw_board():
         y2 = MARGIN_TOP + end[1] * SQUARE_SIZE
         pygame.draw.line(screen, LINE_COLOR, (x1, y1), (x2, y2), 2)
 
-def draw_pieces():
+def draw_pieces(screen, font, pieces):
     for name, (col, row) in pieces:
         x = SQUARE_SIZE + col * SQUARE_SIZE
         y = MARGIN_TOP + row * SQUARE_SIZE
         symbol = PIECE_SYMBOLS.get(name, "?")
         color = (255, 0, 0) if "red" in name else (0, 0, 0)
-
         pygame.draw.circle(screen, color, (x, y), 30, 2)
         text = font.render(symbol, True, color)
         text_rect = text.get_rect(center=(x, y))
         screen.blit(text, text_rect)
-
-# === Vòng lặp chính ===
-clock = pygame.time.Clock()
-while True:
-    screen.fill((255, 255, 255))
-    draw_board()
-    draw_pieces()
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-
-    pygame.display.flip()
-    clock.tick(30)

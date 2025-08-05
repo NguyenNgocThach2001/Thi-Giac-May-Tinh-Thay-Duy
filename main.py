@@ -1,42 +1,57 @@
 import cv2
-import numpy as np
-from board_detector import detect_chessboard, draw_grid_on_board
+import pygame
+import sys
+from detection.board_detection import load_board_model, detect_board
+from detection.piece_detection import load_piece_model, detect_pieces_and_get_positions
+from board_display.board_display import draw_board, draw_pieces
 
-# === Webcam setup
-cap = cv2.VideoCapture(0)
+# === Init models
+board_model = load_board_model()
+piece_model = load_piece_model()
+
+# === Init Pygame
+pygame.init()
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 880
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Bàn cờ Tướng")
+font = pygame.font.SysFont("simsun", 28)
+clock = pygame.time.Clock()
+
+# === Init camera
+cap = cv2.VideoCapture("http://192.168.1.97:4747/video")
 if not cap.isOpened():
     print("❌ Không mở được webcam.")
-    exit()
+    sys.exit()
 
+pieces = []  # danh sách quân cờ sẽ update mỗi khung hình
+
+frame_count = 0
 while True:
     ret, frame = cap.read()
     if not ret:
         break
 
-    frame = cv2.resize(frame, (640, 480))
-    warped, board_contour, mask = detect_chessboard(frame)
+    frame_count += 1
+    if frame_count % 5 == 0:
+        board_img, has_board = detect_board(board_model, frame)
+        if has_board:
+            pieces = detect_pieces_and_get_positions(piece_model, board_img)
 
-    # Vẽ contour bàn cờ lên ảnh gốc nếu có
-    display = frame.copy()
-    if board_contour is not None:
-        cv2.polylines(display, [board_contour.astype(int)], True, (0, 255, 0), 2)
+    # Pygame vẫn render mọi frame
+    screen.fill((255, 255, 255))
+    draw_board(screen)
+    draw_pieces(screen, font, pieces)
 
-    # Nếu phát hiện bàn cờ, warp và chia ô
-    if warped is not None:
-        grid_overlay = draw_grid_on_board(warped)
-        cv2.imshow("Warped with Grid", grid_overlay)
-    else:
-        blank = np.zeros((480, 480, 3), dtype=np.uint8)
-        cv2.imshow("Warped with Grid", blank)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            cap.release()
+            pygame.quit()
+            sys.exit()
 
-    # Hiển thị các ảnh phụ
-    cv2.imshow("Camera", display)
-    if mask is not None:
-        cv2.imshow("Board Mask", mask)
+    pygame.display.flip()
+    clock.tick(30)
 
-    # Thoát nếu nhấn phím q
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
 
 cap.release()
-cv2.destroyAllWindows()
+pygame.quit()
