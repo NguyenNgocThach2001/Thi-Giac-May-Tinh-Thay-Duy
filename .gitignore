@@ -1,9 +1,9 @@
 
 __pycache__/
-runs/
 
-dataset_detection/
-dataset_segmentation/
+runs/
+Dataset_Detection/
+Dataset_Segmentation/
 rawdata/
 processed_data/
 
