@@ -121,10 +121,5 @@ Trước khi chạy các script, cần chỉnh sửa các biến cấu hình tro
    - `NUM_FOLDS`: Số lượng folds (mặc định: 5)
    - `CLASS_NAMES`: Danh sách tên class
 
-## Lưu ý
 
-- Tất cả các script đều có comment tiếng Việt rõ ràng
-- Các script tự động tạo thư mục output nếu chưa tồn tại
-- Script sẽ bỏ qua các file không hợp lệ và in cảnh báo
-- Đảm bảo có đủ dung lượng ổ cứng vì script sẽ copy toàn bộ dataset
 
