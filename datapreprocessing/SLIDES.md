@@ -317,24 +317,22 @@ dataset/
 ### Dataset cuối cùng
 
 **Task 1 - Piece Detection (Phát hiện quân cờ):**
-- **Tổng số ảnh:** [Số liệu thực tế]
+- **Tổng số ảnh:** 924 ảnh
 - **Số classes:** 14
   - Quân đen (0-6): Sĩ, Pháo, Xe, Tượng, Tướng, Mã, Tốt
   - Quân đỏ (7-13): Sĩ, Pháo, Xe, Tượng, Tướng, Mã, Tốt
 - **Chia dữ liệu:**
-  - Train: [X] ảnh
-  - Validation: [Y] ảnh
-  - Test: [Z] ảnh
+  - Train: 739 ảnh
+  - Test: 185 ảnh
 - **Format:** YOLO detection format
   - Mỗi file `.txt`: `class_id x_center y_center width height`
 
 **Task 2 - Board Segmentation (Phát hiện bàn cờ):**
-- **Tổng số ảnh:** [Số liệu thực tế]
+- **Tổng số ảnh:** 924
 - **Số classes:** 1 (board)
 - **Chia dữ liệu:**
-  - Train: [X] ảnh
-  - Validation: [Y] ảnh
-  - Test: [Z] ảnh
+  - Train: 739 ảnh
+  - Test: 185 ảnh
 - **Format:** YOLO segmentation format
   - Mỗi file `.txt`: `class_id x1 y1 x2 y2 x3 y3 x4 y4`
 
@@ -520,4 +518,5 @@ python datapreprocessing/data_prepare.py
 ## CẢM ƠN!
 
 ### Questions?
+
 
